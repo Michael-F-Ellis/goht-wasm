@@ -1,3 +1,4 @@
+// server is the application server
 package main
 
 import (
