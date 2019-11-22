@@ -74,7 +74,7 @@ func registerCallbacks() {
 func injectUI() {
 	doc := js.Global().Get("document")
 	div := doc.Call("createElement", "div")
-	body := js.Global().Get("document").Call("getElementById", "thebody")
+	body := doc.Call("getElementById", "thebody")
 	body.Call("appendChild", div)
 	b := bytes.Buffer{}
 	_ = Render(ui, &b, 0)

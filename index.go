@@ -7,6 +7,24 @@ import (
 	. "github.com/Michael-F-Ellis/goht"
 )
 
+// wasmScript is a generic instantiation of WebAssembly streaming. It's
+// purpose is to fetch and launch main.wasm
+const wasmScript = `
+	if (!WebAssembly.instantiateStreaming) { // polyfill
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
+
+	const go = new Go();
+	let mod, inst;
+	WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject).then(async (result) => {
+		mod = result.module;
+		inst = result.instance;
+		await go.run(inst);
+	});`
+
 // mkIndex constructs and renders the index content that is
 // served to initiate the application.
 func mkIndex() (b bytes.Buffer) {
@@ -15,28 +33,15 @@ func mkIndex() (b bytes.Buffer) {
 		Title(``, "Go wasm"),
 	)
 	body := Body(`id="thebody"`,
-		// wasm_exec.js is shipped with Go to implement
-		// the JS side of syscall/js
+		// wasm_exec.js is shipped with Go to implement the JS side of
+		// syscall/js
 		Script(`src="/wasm_exec.js"`, ""),
-		// The boot script that loads and launches the application's
-		// WebAssembly content
-		Script(``, `
-	if (!WebAssembly.instantiateStreaming) { // polyfill
-			WebAssembly.instantiateStreaming = async (resp, importObject) => {
-				const source = await (await resp).arrayBuffer();
-				return await WebAssembly.instantiate(source, importObject);
-			};
-		}
 
-		const go = new Go();
-
-		let mod, inst;
-
-		WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject).then(async (result) => {
-			mod = result.module;
-			inst = result.instance;
-			await go.run(inst);
-		});`),
+		// wasmScript loads and launches the application's WebAssembly content
+		Script(``, wasmScript),
+		// Note: main.wasm (invoked by wasm_script) injects the html that forms
+		// the UI content of the body into a div created at this point in the
+		// body element. See wasm/main.go to understand how that occurs.
 	)
 	// concatenate and render the html document
 	html := Html(``, head, body)
