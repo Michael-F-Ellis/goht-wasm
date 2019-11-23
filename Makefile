@@ -2,16 +2,16 @@
 # wasm_exec.js
 GOROOT := $(shell go env GOROOT)
 WASMEXEC := $(GOROOT)/misc/wasm/wasm_exec.js
-
+SERVER := goht-wasm
 # pseudo-targets
 .phony: all clean
 
 # Default target
-all: wasm/main.wasm wasmtut wasm_exec.js
+all: wasm/main.wasm $(SERVER) wasm_exec.js
 
 # Executable that serves the demo
-wasmtut: server.go index.go
-	go build
+$(SERVER): server.go index.go
+	go build -o $(SERVER)
 
 # WebAssembly that runs client-side
 wasm/main.wasm: wasm/main.go
@@ -24,4 +24,4 @@ wasm_exec.js: $(WASMEXEC)
 
 # Removes all target files.
 clean:
-	-rm -f wasm/main.wasm wasmtut wasm_exec.js
+	-rm -f wasm/main.wasm $(SERVER) wasm_exec.js

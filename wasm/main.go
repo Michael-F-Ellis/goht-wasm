@@ -10,7 +10,7 @@ import (
 )
 
 // ui defines text fields and buttons displayed in the application
-var ui = Div("",
+var ui = Null(
 	Input(`type="text" id="value1"`),
 	Input(`type="text" id="value2"`),
 	Button(`onClick="add('value1', 'value2', 'result');" id="addButton"`, "Add"),
