@@ -30,7 +30,7 @@ func getInputValues(i []js.Value) (v1, v2 float64) {
 	value1 := getStringValueById(i[0].String())
 	value2 := getStringValueById(i[1].String())
 	v1, _ = strconv.ParseFloat(value1, 64)
-	v2, _ = strconv.ParseFloat(value2,64)
+	v2, _ = strconv.ParseFloat(value2, 64)
 	return
 }
 
@@ -41,7 +41,7 @@ func setPropertyById(id string, property string, v interface{}) {
 }
 
 // setValueById stores the value v in Property "value"
-// of the element with the given id 
+// of the element with the given id
 func setValueById(id string, v interface{}) {
 	js.Global().Get("document").Call("getElementById", id).Set("value", v)
 }
