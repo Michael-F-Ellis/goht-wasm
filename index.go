@@ -19,7 +19,7 @@ const wasmScript = `
 
 	const go = new Go();
 	let mod, inst;
-	WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject).then(async (result) => {
+	WebAssembly.instantiateStreaming(fetch("/static/main.wasm"), go.importObject).then(async (result) => {
 		mod = result.module;
 		inst = result.instance;
 		await go.run(inst);
@@ -35,7 +35,7 @@ func mkIndex() (b bytes.Buffer) {
 	body := Body(``,
 		// wasm_exec.js is shipped with Go to implement the JS side of
 		// syscall/js
-		Script(`src="/wasm_exec.js"`, ""),
+		Script(`src="/static/wasm_exec.js"`, ""),
 
 		// wasmScript loads and launches the application's WebAssembly content
 		Script(``, wasmScript),

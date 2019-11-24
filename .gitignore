@@ -9,6 +9,9 @@
 ## This is copied from the go distribution
 wasm_exec.js
 
+## generated go files
+static.go
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

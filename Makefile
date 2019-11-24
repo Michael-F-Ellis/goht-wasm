@@ -12,10 +12,6 @@ SERVER := goht-wasm
 # Default target
 all: static/main.wasm $(SERVER) static/wasm_exec.js
 
-# Executable that serves the demo
-$(SERVER): server.go index.go
-	go build -o $(SERVER)
-
 # WebAssembly that runs client-side
 static/main.wasm: wasm/main.go
 	cd wasm ; GOOS=js GOARCH=wasm go build -o ../static/main.wasm
@@ -25,6 +21,15 @@ static/main.wasm: wasm/main.go
 static/wasm_exec.js: $(WASMEXEC)
 	cp $(WASMEXEC) static/
 
+# Generate the go files that create the esc filesystem
+static.go: static/wasm_exec.js static/main.wasm
+	esc -ignore static/*.go -o static.go static
+
+# Executable that serves the demo
+$(SERVER): server.go index.go static.go
+	go build -o $(SERVER)
+
+
 # Removes all target files.
 clean:
-	-rm -f static/main.wasm $(SERVER) static/wasm_exec.js
+	-rm -f static/main.wasm $(SERVER) static/wasm_exec.js static.go
