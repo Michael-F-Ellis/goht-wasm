@@ -32,16 +32,17 @@ func mkIndex() (b bytes.Buffer) {
 		Meta(`charset="utf-8"`),
 		Title(``, "Go wasm"),
 	)
-	body := Body(`id="thebody"`,
+	body := Body(``,
 		// wasm_exec.js is shipped with Go to implement the JS side of
 		// syscall/js
 		Script(`src="/wasm_exec.js"`, ""),
 
 		// wasmScript loads and launches the application's WebAssembly content
 		Script(``, wasmScript),
-		// Note: main.wasm (invoked by wasm_script) injects the html that forms
-		// the UI content of the body into a div created at this point in the
-		// body element. See wasm/main.go to understand how that occurs.
+
+		// main.wasm (invoked by wasm_script) injects the html that forms
+		// the UI content of the body into the div below.
+		Div(`id=content`, ``),
 	)
 	// concatenate and render the html document
 	html := Html(``, head, body)

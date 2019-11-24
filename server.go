@@ -27,7 +27,7 @@ func main() {
 	mux.HandleFunc("/", indexPage)
 	mux.HandleFunc("/main.wasm", sendWasm)
 	mux.HandleFunc("/wasm_exec.js", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "wasm_exec.js")
+		http.ServeFile(w, r, "static/wasm_exec.js")
 	})
 	log.Fatal(http.ListenAndServe(*listen, mux))
 }
@@ -43,5 +43,5 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 // sendWasm serves main.wasm
 func sendWasm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/wasm")
-	http.ServeFile(w, r, "wasm/main.wasm")
+	http.ServeFile(w, r, "static/main.wasm")
 }
